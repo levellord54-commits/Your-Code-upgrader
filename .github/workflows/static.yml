@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Expansion Studio</title>
+<style>
+body{margin:0;background:#0b1110;color:#e7efe9;font-family:system-ui}
+.wrap{max-width:760px;margin:auto;padding:14px}
+.card{background:#141b18;border-radius:16px;padding:14px;margin:10px 0}
+textarea,input,select,button{width:100%;box-sizing:border-box;border-radius:12px}
+textarea,input,select{padding:12px;background:#09100d;color:#fff;border:1px solid #223129}
+button{padding:14px;background:#62ffa8;border:0;font-weight:700}
+pre{white-space:pre-wrap;overflow:auto;max-height:55vh}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="card"><h2>Expansion Studio</h2><div>Turn small code into a larger structured project scaffold.</div></div>
+<div class="card">
+<input id="goal" placeholder="Example: Turn into SaaS dashboard / portfolio / ecommerce site">
+<select id="depth">
+<option>Expand</option><option selected>Large Site</option><option>Huge Project</option>
+</select>
+</div>
+<div class="card">
+<textarea id="code" style="height:240px" placeholder="Paste existing code"></textarea>
+<button onclick="expandProject()">Upgrade & Expand</button>
+</div>
+<div class="card"><pre id="out"></pre></div>
+</div>
+<script>
+function scaffold(goal){
+return `
+<!-- Generated Sections -->
+<header></header>
+<nav></nav>
+<main>
+<section id="hero"></section>
+<section id="features"></section>
+<section id="content"></section>
+<section id="dashboard"></section>
+<section id="analytics"></section>
+<section id="faq"></section>
+</main>
+<footer></footer>
+<style>body{font-family:system-ui}section{min-height:400px;padding:32px}</style>
+<script>console.log("Expanded: ${goal}")<\/script>`
+}
+function modernize(code){
+return code.replace(/var/g,'let').replace(/==(?!=)/g,'===')
+}
+function multiply(code,level){
+const factor = level==='Huge Project'?10:(level==='Large Site'?5:2)
+let out=''
+for(let i=0;i<factor;i++) out += '
+/* Expansion Layer '+(i+1)+' */
+'+code
+return out
+}
+function expandProject(){
+const src=document.getElementById('code').value.trim()
+const goal=document.getElementById('goal').value.trim()
+const level=document.getElementById('depth').value
+let expanded=modernize(src)
+expanded=multiply(expanded,level)
+expanded += scaffold(goal)
+document.getElementById('out').textContent=expanded
+}
+</script>
+
+<style>
+#cookieBanner{position:fixed;left:12px;right:12px;bottom:12px;background:#131917;color:#eef5f0;border:1px solid #2a3a31;border-radius:14px;padding:14px;z-index:9999;display:none}
+#cookieBanner .row{display:flex;gap:8px;flex-wrap:wrap}
+#cookieBanner button{flex:1;padding:10px;border-radius:10px;border:none}
+#cookieAccept{background:#62ffa8}
+#cookieDecline{background:#202a25;color:#eef5f0}
+</style>
+<div id="cookieBanner">
+  <div><strong>Cookies & local storage</strong></div>
+  <div>This site stores preferences and upgrade memory on your device to improve future sessions.</div>
+  <div class="row">
+    <button id="cookieAccept">Accept</button>
+    <button id="cookieDecline">Continue without saving</button>
+  </div>
+</div>
+<script>
+(function(){
+const KEY='upgrade_cookie_choice';
+const banner=document.getElementById('cookieBanner');
+const choice=localStorage.getItem(KEY);
+if(!choice){banner.style.display='block';}
+function setChoice(v){localStorage.setItem(KEY,v);banner.style.display='none';}
+document.getElementById('cookieAccept').onclick=()=>setChoice('accepted');
+document.getElementById('cookieDecline').onclick=()=>setChoice('declined');
+})();
+</script>
+
+
+<style>
+#helpDock{position:fixed;top:12px;right:12px;display:flex;gap:8px;z-index:10000}
+.helpBtn{padding:10px 12px;border:none;border-radius:10px;background:#62ffa8;font-weight:700}
+#learnPanel,#feedbackPanel{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,520px);background:#131917;color:#eef5f0;border-radius:14px;padding:16px;z-index:10001}
+#feedbackText{width:100%;height:120px}
+</style>
+<div id="helpDock">
+<button class="helpBtn" onclick="toggleLearn()">Learn</button>
+<button class="helpBtn" onclick="toggleFeedback()">Feedback</button>
+</div>
+<div id="learnPanel">
+<h3>How to use</h3>
+<ol>
+<li>Paste your code</li>
+<li>Choose upgrade mode</li>
+<li>Press Upgrade</li>
+<li>Review output and export</li>
+</ol>
+<button onclick="toggleLearn()">Close</button>
+</div>
+<div id="feedbackPanel">
+<h3>Send feedback</h3>
+<textarea id="feedbackText" placeholder="Tell us what worked or what should improve"></textarea>
+<button onclick="sendFeedback()">Open WhatsApp</button>
+<button onclick="toggleFeedback()">Close</button>
+</div>
+<script>
+function toggleLearn(){const p=document.getElementById('learnPanel');p.style.display=p.style.display==='block'?'none':'block'}
+function toggleFeedback(){const p=document.getElementById('feedbackPanel');p.style.display=p.style.display==='block'?'none':'block'}
+function sendFeedback(){
+ const msg=encodeURIComponent(document.getElementById('feedbackText').value||'Feedback from Upgrade Studio');
+ window.open('https://wa.me/233598206843?text='+msg,'_blank');
+}
+</script>
+
+</body></html>
